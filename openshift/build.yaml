@@ -46,6 +46,7 @@ objects:
     name: ha-tomcat9
   spec:
     nodeSelector: null
+    runPolicy: SerialLatestOnly
     output:
       to:
         kind: ImageStreamTag
