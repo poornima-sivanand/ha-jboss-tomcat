@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Template
+metadata: {}
+objects:
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewBuild
+    creationTimestamp: null
+    labels:
+      build: ha-webserver50-tomcat9
+    name: webserver50-tomcat9-openshift
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations:
+        openshift.io/imported-from: registry.access.redhat.com/jboss-webserver-5/webserver50-tomcat9-openshift:1.2-13.1567588142
+      from:
+        kind: DockerImage
+        name: registry.access.redhat.com/jboss-webserver-5/webserver50-tomcat9-openshift:1.2-13.1567588142
+      generation: null
+      importPolicy: {}
+      name: "1.2-13.1567588142"
+      referencePolicy:
+        type: "Local"
+  status:
+    dockerImageRepository: ""
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewBuild
+    creationTimestamp: null
+    labels:
+      build: ha-webserver50-tomcat9
+    name: ha-webserver50-tomcat9
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: ""
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewBuild
+    creationTimestamp: null
+    labels:
+      build: ha-webserver50-tomcat9
+    name: ha-webserver50-tomcat9
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ha-webserver50-tomcat9:latest
+    postCommit: {}
+    resources: {}
+    source:
+      contextDir: docker
+      git:
+        ref: master
+        uri: https://github.com/cvarjao/ha-jboss-tomcat.git
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: webserver50-tomcat9-openshift:1.2-13
+      type: Docker
+    triggers:
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
