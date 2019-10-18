@@ -24,9 +24,18 @@ oc cp tomcat:/usr/local/tomcat/conf/server.xml docker/contrib/server.original.xm
 cp docker/contrib/server.original.xml docker/contrib/server.xml
 
 diff -u docker/contrib/server.original.xml docker/contrib/server.xml > docker/contrib/server.xml.patch
+patch --batch --input=docker/contrib/server.xml.patch --output=docker/contrib/server.final.xml docker/contrib/server.original.xml
 
-cp docker/contrib/server.original.xml docker/contrib/server2.xml
-patch --batch --input=docker/contrib/server.xml.patch --output=docker/contrib/server.xml docker/contrib/server.original.xml
+
+oc cp tomcat:/usr/local/tomcat/conf/web.xml docker/contrib/web.original.xml
+(cd docker/contrib/ && cp web.original.xml web.final.xml)
+(cd docker/contrib/ && diff -u server.original.xml server.xml > patches.patch)
+(cd docker/contrib/ && diff -u web.original.xml web.xml  >> patches.patch)
+(cd docker/contrib/ && diff -u web.original.xml web.final.xml > web.xml.patch)
+
+(cd docker/contrib/ && patch --batch --input=patches.patch)
+
+
 
 oc policy add-role-to-user tomcat -z tomcat --dry-run -o yaml
 oc create role tomcat --verb=get,list,watch --resource=pods --dry-run -o yaml
