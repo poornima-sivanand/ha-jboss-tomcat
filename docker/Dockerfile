@@ -1,7 +1,11 @@
-FROM registry.access.redhat.com/jboss-webserver-5/webserver50-tomcat9-openshift:1.2-13
-USER 0
-RUN yum install patch -y
-
-USER 185
-COPY contrib/server.xml /opt/jws-5.0/tomcat/conf/
-RUN curl -sSL https://github.com/jfclere/tomcat-kubernetes/raw/master/sample.war -o $JWS_HOME/webapps/ROOT.war
+FROM tomcat:9.0.27-jdk8-openjdk
+#FROM registry.access.redhat.com/jboss-webserver-5/webserver50-tomcat9-openshift:1.2-13
+COPY contrib/server.xml.patch /usr/local/tomcat/conf/
+RUN apt-get update && \
+    apt-get install -qq -y --no-upgrade patch && \
+    rm -rf /usr/local/tomcat/webapps/* && \
+    mkdir -p /usr/local/tomcat/conf/Catalina/localhost && \
+    chmod g+w /usr/local/tomcat/conf/Catalina/localhost && \
+    chmod g+w /usr/local/tomcat/webapps && \
+    curl -sSL https://github.com/jfclere/tomcat-kubernetes/raw/master/sample.war -o /usr/local/tomcat/webapps/ROOT.war && \
+    apt-get remove --purge patch && apt-get clean && rm -rf /var/lib/apt/lists/*

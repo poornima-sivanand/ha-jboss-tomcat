@@ -5,28 +5,22 @@ objects:
 - apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
-    annotations:
-      openshift.io/generated-by: OpenShiftNewBuild
-    creationTimestamp: null
-    labels:
-      build: ha-webserver50-tomcat9
-    name: webserver50-tomcat9-openshift
+    name: tomcat9
   spec:
     lookupPolicy:
       local: false
     tags:
-    - annotations:
-        openshift.io/imported-from: registry.access.redhat.com/jboss-webserver-5/webserver50-tomcat9-openshift:1.2-13.1567588142
-      from:
-        kind: DockerImage
-        name: registry.access.redhat.com/jboss-webserver-5/webserver50-tomcat9-openshift:1.2-13.1567588142
-      generation: null
-      importPolicy: {}
-      name: "1.2-13.1567588142"
-      referencePolicy:
-        type: "Local"
+      - annotations: null
+        from:
+          kind: DockerImage
+          name: 'tomcat:9.0.27-jdk8-openjdk'
+        generation: 1
+        importPolicy: {}
+        name: 9.0.27-jdk8-openjdk
+        referencePolicy:
+          type: Local
   status:
-    dockerImageRepository: ""
+    dockerImageRepository: ''
 - apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
@@ -34,8 +28,8 @@ objects:
       openshift.io/generated-by: OpenShiftNewBuild
     creationTimestamp: null
     labels:
-      build: ha-webserver50-tomcat9
-    name: ha-webserver50-tomcat9
+      build: ha-tomcat9
+    name: ha-tomcat9
   spec:
     lookupPolicy:
       local: false
@@ -48,14 +42,14 @@ objects:
       openshift.io/generated-by: OpenShiftNewBuild
     creationTimestamp: null
     labels:
-      build: ha-webserver50-tomcat9
-    name: ha-webserver50-tomcat9
+      build: ha-tomcat9
+    name: ha-tomcat9
   spec:
     nodeSelector: null
     output:
       to:
         kind: ImageStreamTag
-        name: ha-webserver50-tomcat9:latest
+        name: ha-tomcat9:latest
     postCommit: {}
     resources: {}
     source:
@@ -68,7 +62,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: webserver50-tomcat9-openshift:1.2-13
+          name: tomcat9:9.0.27-jdk8-openjdk
       type: Docker
     triggers:
     - type: ConfigChange

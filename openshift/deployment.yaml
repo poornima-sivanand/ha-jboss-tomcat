@@ -2,6 +2,31 @@ apiVersion: v1
 kind: Template
 metadata: {}
 objects:
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    creationTimestamp: null
+    name: tomcat
+- kind: Role
+  apiVersion: rbac.authorization.k8s.io/v1
+  metadata:
+    name: tomcat
+  rules:
+  - apiGroups: [""] # "" indicates the core API group
+    resources: ["pods"]
+    verbs: ["get", "watch", "list"]
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: null
+    name: tomcat
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: Role
+    name: tomcat
+  subjects:
+  - kind: ServiceAccount
+    name: tomcat
 - apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
   metadata:
@@ -9,13 +34,13 @@ objects:
       openshift.io/generated-by: OpenShiftNewApp
     creationTimestamp: null
     labels:
-      app: ha-webserver50-tomcat9
-    name: ha-webserver50-tomcat9
+      app: ha-tomcat9
+    name: ha-tomcat9
   spec:
     replicas: 1
     selector:
-      app: ha-webserver50-tomcat9
-      deploymentconfig: ha-webserver50-tomcat9
+      app: ha-tomcat9
+      deploymentconfig: ha-tomcat9
     strategy:
       resources: {}
     template:
@@ -24,12 +49,22 @@ objects:
           openshift.io/generated-by: OpenShiftNewApp
         creationTimestamp: null
         labels:
-          app: ha-webserver50-tomcat9
-          deploymentconfig: ha-webserver50-tomcat9
+          app: ha-tomcat9
+          deploymentconfig: ha-tomcat9
       spec:
+        serviceAccountName: 'tomcat'
         containers:
-        - image: ' '
-          name: jboss
+        - name: tomcat
+          image: ' '
+          env:
+            - name: OPENSHIFT_KUBE_PING_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: OPENSHIFT_KUBE_PING_LABELS
+              value: "deploymentconfig=ha-tomcat9"
+            - name: CATALINA_OPTS
+              value: "-Djava.security.egd=file:/dev/./urandom"
           ports:
           - containerPort: 8080
             protocol: TCP
@@ -37,6 +72,16 @@ objects:
             protocol: TCP
           - containerPort: 8778
             protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
           resources: {}
     test: false
     triggers:
@@ -44,10 +89,10 @@ objects:
     - imageChangeParams:
         automatic: true
         containerNames:
-        - jboss
+        - tomcat
         from:
           kind: ImageStreamTag
-          name: webserver50-tomcat9-openshift:1.2-13
+          name: ha-tomcat9:latest
       type: ImageChange
   status:
     availableReplicas: 0
@@ -63,8 +108,8 @@ objects:
       openshift.io/generated-by: OpenShiftNewApp
     creationTimestamp: null
     labels:
-      app: ha-webserver50-tomcat9
-    name: ha-webserver50-tomcat9
+      app: ha-tomcat9
+    name: ha-tomcat9
   spec:
     ports:
     - name: 8080-tcp
@@ -80,6 +125,25 @@ objects:
       protocol: TCP
       targetPort: 8778
     selector:
-      deploymentconfig: ha-webserver50-tomcat9
+      deploymentconfig: ha-tomcat9
   status:
     loadBalancer: {}
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    annotations:
+      haproxy.router.openshift.io/balance: roundrobin
+      haproxy.router.openshift.io/disable_cookies: 'true'
+    labels:
+      app: ha-tomcat9
+    name: ha-tomcat9
+  spec:
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: ha-tomcat9
+      weight: 100
+    wildcardPolicy: None
+  status:
+    ingress: []
