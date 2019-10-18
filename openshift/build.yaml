@@ -60,6 +60,7 @@ objects:
       type: Git
     strategy:
       dockerStrategy:
+        imageOptimizationPolicy: SkipLayers
         from:
           kind: ImageStreamTag
           name: tomcat9:9.0.27-jdk8-openjdk

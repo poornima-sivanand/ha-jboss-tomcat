@@ -26,7 +26,7 @@ cp docker/contrib/server.original.xml docker/contrib/server.xml
 diff docker/contrib/server.original.xml docker/contrib/server.xml > docker/contrib/server.xml.patch
 
 cp docker/contrib/server.original.xml docker/contrib/server2.xml
-patch --batch --input=docker/contrib/server.xml.patch --output=docker/contrib/server2.xml docker/contrib/server.xml
+patch --batch --input=docker/contrib/server.xml.patch docker/contrib/server.original.xml
 
 oc policy add-role-to-user tomcat -z tomcat --dry-run -o yaml
 oc create role tomcat --verb=get,list,watch --resource=pods --dry-run -o yaml
