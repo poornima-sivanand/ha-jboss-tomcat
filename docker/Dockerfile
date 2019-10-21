@@ -12,4 +12,8 @@ RUN set -xe && \
     sha1sum --check /usr/local/tomcat/conf/original-files.sha1 --status && \
     patch --batch --forward --quiet --unified --directory=/usr/local/tomcat/conf --input=/usr/local/tomcat/conf/patches.patch && \
     curl -sSL https://github.com/jfclere/tomcat-kubernetes/raw/master/sample.war -o /usr/local/tomcat/webapps/ROOT.war && \
+    curl -sSL https://oss.sonatype.org/content/repositories/public/io/hawt/hawtio-default/2.7.1/hawtio-default-2.7.1.war -o /usr/local/tomcat/webapps/hawtio.war && \
+    find /usr/local/tomcat/webapps/ -maxdepth 1 -name '*.war' | xargs basename -s .war | xargs -t -I {} mkdir '/usr/local/tomcat/webapps/{}' && \
+    find /usr/local/tomcat/webapps/ -maxdepth 1 -name '*.war' | xargs basename -s .war | xargs -t -I {} unzip -n -qq '/usr/local/tomcat/webapps/{}.war' -d '/usr/local/tomcat/webapps/{}' && \
+    find /usr/local/tomcat/webapps/ -maxdepth 1 -name '*.war' | xargs -t -I {} rm '{}' && \
     apt-get remove -qq -y --purge patch && apt-get clean && set +x && rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
