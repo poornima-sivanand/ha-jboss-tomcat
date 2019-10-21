@@ -17,3 +17,19 @@ RUN set -xe && \
     find /usr/local/tomcat/webapps/ -maxdepth 1 -name '*.war' | xargs basename -s .war | xargs -t -I {} unzip -n -qq '/usr/local/tomcat/webapps/{}.war' -d '/usr/local/tomcat/webapps/{}' && \
     find /usr/local/tomcat/webapps/ -maxdepth 1 -name '*.war' | xargs -t -I {} rm '{}' && \
     apt-get remove -qq -y --purge patch && apt-get clean && set +x && rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
+RUN echo "5cluster.org.apache.juli.FileHandler.level = INFO\n"\
+    "5cluster.org.apache.juli.FileHandler.directory = ${catalina.base}/logs"\
+    "5cluster.org.apache.juli.FileHandler.prefix = cluster."\
+    "6cluster.org.apache.juli.FileHandler.level = INFO"\
+    "6cluster.org.apache.juli.FileHandler.directory = ${catalina.base}/logs"\
+    "6cluster.org.apache.juli.FileHandler.prefix = ha."\
+    "org.apache.catalina.tribes.MESSAGES.level = INFO"\
+    "org.apache.catalina.tribes.MESSAGES.handlers = 5cluster.org.apache.juli.FileHandler"\
+    "org.apache.catalina.tribes.level = INFO"\
+    "org.apache.catalina.tribes.handlers = 5cluster.org.apache.juli.FileHandler"\
+    "org.apache.catalina.ha.level = INFO"\
+    "org.apache.catalina.ha.handlers = 6cluster.org.apache.juli.FileHandler"\
+    >> /usr/local/tomcat/conf/logging.properties
+
+
+
