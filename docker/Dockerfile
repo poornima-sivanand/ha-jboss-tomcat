@@ -21,6 +21,10 @@ RUN echo mv /usr/local/tomcat/conf/logging.properties  /usr/local/tomcat/conf/lo
 COPY contrib/logging.properties /usr/local/tomcat/conf/
 RUN echo mv /usr/local/tomcat/conf/server.xml  /usr/local/tomcat/conf/server.xml.bck
 COPY contrib/server.xml /usr/local/tomcat/conf/
+ENV JPDA_ADDRESS="8778"
+ENV JPDA_TRANSPORT="dt_socket"
+ENV JPDA_SUSPEND="n"
+ENTRYPOINT ["catalina.sh", "jpda", "run"]
 
 
 
