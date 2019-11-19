@@ -130,15 +130,31 @@
       <!--For clustering, please take a look at documentation at:
           /docs/cluster-howto.html  (simple how to)
           /docs/config/cluster.html (reference documentation) -->
-      <Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster" />
-       <!--    <Channel className="org.apache.catalina.tribes.group.GroupChannel">
-              <Membership className="org.apache.catalina.tribes.membership.cloud.CloudMembershipService"/>
-          </Channel>
+      <Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster">
+        
+          <Manager className="org.apache.catalina.ha.session.DeltaManager"
+                   expireSessionsOnShutdown="false"
+                   notifyListenersOnReplication="true"/>
+
+       <Channel className="org.apache.catalina.tribes.group.GroupChannel">
+            <Membership className="org.apache.catalina.tribes.membership.cloud.CloudMembershipService"/>
+        </Channel>
+  
 
           <Valve className="org.apache.catalina.ha.tcp.ReplicationValve"
                  filter=""/>
+          <Valve className="org.apache.catalina.ha.session.JvmRouteBinderValve"/>
+
+          <Deployer className="org.apache.catalina.ha.deploy.FarmWarDeployer"
+                    tempDir="/tmp/war-temp/"
+                    deployDir="/usr/loca/tomcat/webapps/pub#wiof"
+                    watchDir="/tmp/war-listen/"
+                    watchEnabled="false"/>
+
+          <ClusterListener className="org.apache.catalina.ha.session.ClusterSessionListener"/>
+
  
-      </Cluster> -->
+      </Cluster>
 
       <!-- Use the LockOutRealm to prevent attempts to guess user passwords
            via a brute-force attack -->
