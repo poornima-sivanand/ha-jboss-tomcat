@@ -130,7 +130,7 @@
       <!--For clustering, please take a look at documentation at:
           /docs/cluster-howto.html  (simple how to)
           /docs/config/cluster.html (reference documentation) -->
-      <Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster">
+      <Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster" channelSendOptions="6">
           <Channel className="org.apache.catalina.tribes.group.GroupChannel">
               <Membership className="org.apache.catalina.tribes.membership.cloud.CloudMembershipService"/>
           </Channel>
