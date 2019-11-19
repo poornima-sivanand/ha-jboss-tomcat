@@ -19,8 +19,8 @@ RUN set -xe && \
     apt-get remove -qq -y --purge patch && apt-get clean && set +x && rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
 #RUN echo mv /usr/local/tomcat/conf/logging.properties  /usr/local/tomcat/conf/logging.properties.bck
 #COPY contrib/logging.properties /usr/local/tomcat/conf/
-#RUN echo mv /usr/local/tomcat/conf/server.xml  /usr/local/tomcat/conf/server.xml.bck
-#COPY contrib/server.xml /usr/local/tomcat/conf/
+RUN echo mv /usr/local/tomcat/conf/server.xml  /usr/local/tomcat/conf/server.xml.bck
+COPY contrib/server.xml /usr/local/tomcat/conf/
 #ENV JPDA_ADDRESS="8090"
 #ENV JPDA_TRANSPORT="dt_socket"
 #ENV JPDA_SUSPEND="n"
