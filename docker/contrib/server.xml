@@ -130,15 +130,15 @@
       <!--For clustering, please take a look at documentation at:
           /docs/cluster-howto.html  (simple how to)
           /docs/config/cluster.html (reference documentation) -->
-      <Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster">
-          <Channel className="org.apache.catalina.tribes.group.GroupChannel">
+      <Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster" />
+       <!--    <Channel className="org.apache.catalina.tribes.group.GroupChannel">
               <Membership className="org.apache.catalina.tribes.membership.cloud.CloudMembershipService"/>
           </Channel>
 
           <Valve className="org.apache.catalina.ha.tcp.ReplicationValve"
                  filter=""/>
  
-      </Cluster>
+      </Cluster> -->
 
       <!-- Use the LockOutRealm to prevent attempts to guess user passwords
            via a brute-force attack -->
