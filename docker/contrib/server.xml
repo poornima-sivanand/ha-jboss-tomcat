@@ -131,18 +131,9 @@
           /docs/cluster-howto.html  (simple how to)
           /docs/config/cluster.html (reference documentation) -->
       <Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster">
-        
-       <Channel className="org.apache.catalina.tribes.group.GroupChannel">
-            <Membership className="org.apache.catalina.tribes.membership.cloud.CloudMembershipService"/>
-        </Channel>
-  
-
-          <Valve className="org.apache.catalina.ha.tcp.ReplicationValve"
-                 filter=""/>
-
-          <ClusterListener className="org.apache.catalina.ha.session.ClusterSessionListener"/>
-
- 
+          <Channel className="org.apache.catalina.tribes.group.GroupChannel">
+              <Membership className="org.apache.catalina.tribes.membership.cloud.CloudMembershipService"/>
+          </Channel>
       </Cluster>
 
       <!-- Use the LockOutRealm to prevent attempts to guess user passwords
