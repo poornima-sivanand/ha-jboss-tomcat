@@ -145,13 +145,6 @@
                remoteIpHeader="x-forwarded-for"
                proxiesHeader="x-forwarded-by"
                protocolHeader="x-forwarded-proto" />
-           <Deployer
-            className=".ha.deploy.FarmWarDeployer"
-            tempDir="/tmp/war-temp/"
-            deployDir="/usr/local/tomcat/webapps/"
-            watchDir="/tmp/war-listen/"
-            watchEnabled="false"
-           />
         <ClusterListener className="org.apache.catalina.ha.session.ClusterSessionListener"/>
       </Cluster>
 
