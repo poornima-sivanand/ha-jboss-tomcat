@@ -131,10 +131,27 @@
           /docs/cluster-howto.html  (simple how to)
           /docs/config/cluster.html (reference documentation) -->
       <Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster" channelSendOptions="6">
+        <Manager className="org.apache.catalina.ha.session.BackupManager"
+                   expireSessionsOnShutdown="false"
+                   notifyListenersOnReplication="true"/>
           <Channel className="org.apache.catalina.tribes.group.GroupChannel">
               <Membership className="org.apache.catalina.tribes.membership.cloud.CloudMembershipService"/>
              <Interceptor className="org.apache.catalina.tribes.group.interceptors.ThroughputInterceptor"/>
           </Channel>
+          <Valve className="org.apache.catalina.ha.tcp.ReplicationValve"
+                 filter=".*\.gif;.*\.js;.*\.jpg;.*\.htm;.*\.html;.*\.css;.*\.txt"/>
+          <Valve className="org.apache.catalina.valves.RemoteIpValve"
+               internalProxies=".*"
+               remoteIpHeader="x-forwarded-for"
+               proxiesHeader="x-forwarded-by"
+               protocolHeader="x-forwarded-proto" />
+           <Deployer
+            className=".ha.deploy.FarmWarDeployer"
+            tempDir="/tmp/war-temp/"
+            deployDir="/usr/local/tomcat/webapps/"
+            watchDir="/tmp/war-listen/"
+            watchEnabled="false"
+           />
         <ClusterListener className="org.apache.catalina.ha.session.ClusterSessionListener"/>
       </Cluster>
 
@@ -157,6 +174,7 @@
         <!--
         <Valve className="org.apache.catalina.authenticator.SingleSignOn" />
         -->
+ 
 
         <!-- Access log processes all example.
              Documentation at: /docs/config/valve.html
