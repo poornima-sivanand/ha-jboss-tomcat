@@ -17,14 +17,14 @@ RUN set -xe && \
     find /usr/local/tomcat/webapps/ -maxdepth 1 -name '*.war' | xargs basename -s .war | xargs -t -I {} unzip -n -qq '/usr/local/tomcat/webapps/{}.war' -d '/usr/local/tomcat/webapps/{}' && \
     find /usr/local/tomcat/webapps/ -maxdepth 1 -name '*.war' | xargs -t -I {} rm '{}' && \
     apt-get remove -qq -y --purge patch && apt-get clean && set +x && rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
-RUN echo mv /usr/local/tomcat/conf/logging.properties  /usr/local/tomcat/conf/logging.properties.bck
-COPY contrib/logging.properties /usr/local/tomcat/conf/
-RUN echo mv /usr/local/tomcat/conf/server.xml  /usr/local/tomcat/conf/server.xml.bck
-COPY contrib/server.xml /usr/local/tomcat/conf/
-ENV JPDA_ADDRESS="8090"
-ENV JPDA_TRANSPORT="dt_socket"
-ENV JPDA_SUSPEND="n"
-ENTRYPOINT ["catalina.sh", "jpda", "run"]
+#RUN echo mv /usr/local/tomcat/conf/logging.properties  /usr/local/tomcat/conf/logging.properties.bck
+#COPY contrib/logging.properties /usr/local/tomcat/conf/
+#RUN echo mv /usr/local/tomcat/conf/server.xml  /usr/local/tomcat/conf/server.xml.bck
+#COPY contrib/server.xml /usr/local/tomcat/conf/
+#ENV JPDA_ADDRESS="8090"
+#ENV JPDA_TRANSPORT="dt_socket"
+#ENV JPDA_SUSPEND="n"
+#ENTRYPOINT ["catalina.sh", "jpda", "run"]
 
 
 
